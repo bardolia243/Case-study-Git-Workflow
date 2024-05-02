@@ -1,0 +1,26 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and deploy
+        run: |
+          docker build -t ubuntu-apache .
+          docker run -d --name website ubuntu-apache
+          docker cp website:/path/to/built/files /var/www/html
+
+          if [ "${{ github.ref }}" = "refs/heads/master" ]; then
+            # Publish the website on port 82
+            # Example: Use Apache reverse proxy or similar setup to expose port 82
+          fi
